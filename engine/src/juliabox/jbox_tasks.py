@@ -134,7 +134,14 @@ class JBoxAsyncJob(LoggerMixin):
         self._push_pull_sock.send_json(self._make_msg(cmd, data))
 
     def recv(self):
-        msg = self._push_pull_sock.recv_json()
+        raw_msg = self._push_pull_sock.recv()
+        msg = ""
+        try:
+            msg = json.loads(raw_msg)
+        except:
+            JBoxAsyncJob.log_error(
+                "Expected JSON but received non-JSON message on task queue.")
+            return "", ""
         return self._extract_msg(msg)
 
     def poll(self, req_resp_pending=False):
