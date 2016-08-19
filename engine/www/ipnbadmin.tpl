@@ -185,9 +185,9 @@ Julia versions and packages: <a href="#" class="showpackages" id="showpackages-0
 	<b>Kernel failing to initialise?</b>
 	<p> 
 	A conflict between system packages and those installed by you may cause errors and failures while starting notebooks.<br/>
-	In such cases, delete/update conflicting packages or click the button below to go back to using system installed packages only.<br/>
+	In such cases, you will need to reset conflicting packages to go back to using system installed packages only.<br/>
 	</p>
-	<a href="#" id="delpackages" class="btn btn-warning">Purge my packages <span class="glyphicon glyphicon-trash"></span></a>
+	<a href="#" id="delpackages" class="btn btn-warning">Reset my packages <span class="glyphicon glyphicon-trash"></span></a>
 </p>
 <br/>
 
