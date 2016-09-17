@@ -51,6 +51,7 @@ class CompGCE(JBPluginCloud):
     MIN_UPTIME = 50
     ACCEPTANCE_LOAD = 50
     NUM_ACCEPTERS = 1
+    SCALER_PLUGIN = None
 
     @staticmethod
     def configure():
@@ -422,6 +423,12 @@ class CompGCE(JBPluginCloud):
         return accepter
 
     @staticmethod
+    def _get_scaler_plugin():
+        if CompGCE.SCALER_PLUGIN is None:
+            CompGCE.SCALER_PLUGIN = JBPluginCloud.jbox_get_plugin(JBPluginCloud.JBP_SCALER)
+        return CompGCE.SCALER_PLUGIN
+
+    @staticmethod
     def should_accept_session(is_leader):
         self_instance_id = CompGCE.get_instance_id()
         self_load = CompGCE.get_instance_stats(self_instance_id, 'Load')
@@ -441,9 +448,18 @@ class CompGCE(JBPluginCloud):
         avg_load = CompGCE.get_cluster_average_stats('Load', results=cluster_load)
         CompGCE.log_debug("Average load (excluding old amis): %r", avg_load)
 
-        if avg_load >= CompGCE.SCALE_UP_AT_LOAD:
-            CompGCE.log_warn("Requesting scale up as cluster average load %r > %r", avg_load, CompGCE.SCALE_UP_AT_LOAD)
-            CompGCE._add_instance()
+        scaler = CompGCE._get_scaler_plugin()
+        if scaler:
+            scaler.configure()
+            m = scaler.machines_to_add(avg_load)
+            if m > 0:
+                CompGCE.log_warn("%r has requested scale up, adding %d machines, average load is %r",
+                                 scaler.get_name(), m , avg_load)
+                CompGCE._add_instance(m)
+        else:
+            if avg_load >= CompGCE.SCALE_UP_AT_LOAD:
+                CompGCE.log_warn("Requesting scale up as cluster average load %r > %r", avg_load, CompGCE.SCALE_UP_AT_LOAD)
+                CompGCE._add_instance()
 
         if self_load >= 100:
             CompGCE.log_debug("Not accepting: fully loaded")
@@ -599,13 +615,13 @@ class CompGCE(JBPluginCloud):
 
     @staticmethod
     @retry_on_errors(retries=2)
-    def _increment_num_instances():
+    def _increment_num_instances(instances):
         conn = CompGCE._connect_gce().instanceGroupManagers()
         curr = conn.get(project=CompGCE.INSTALL_ID, zone=CompGCE._zone(),
                         instanceGroupManager=CompGCE.AUTOSCALE_GROUP).execute()['targetSize']
         return conn.resize(project=CompGCE.INSTALL_ID, zone=CompGCE._zone(),
                            instanceGroupManager=CompGCE.AUTOSCALE_GROUP,
-                           size=curr + 1).execute()
+                           size=curr + instances).execute()
 
     DB_PLUGIN = None
     @staticmethod
@@ -637,14 +653,14 @@ class CompGCE(JBPluginCloud):
         return True
 
     @staticmethod
-    def _add_instance():
+    def _add_instance(instances=1):
         try:
             # Execute policy only after a reasonable wait period to let a new machine boot up.
             # This will prevent thrashing AWS APIs and triggering AWS throttling.
             # Cooldown policy can also apply after that.
             if CompGCE._should_scale_up():
                 if CompGCE.SCALE_UP_POLICY == 'addinstance':
-                    CompGCE._increment_num_instances()
+                    CompGCE._increment_num_instances(instances)
         except:
             CompGCE.log_exception("Error requesting scale up")
 

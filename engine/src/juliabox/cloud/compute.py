@@ -72,6 +72,9 @@ class JBPluginCloud(LoggerMixin):
 
     JBP_MIGRATE = "cloud.migrate"
 
+    JBP_SCALER = "cloud.scaler"
+    JBP_SCALER_SIMPLE_REACTIVE = "cloud.scaler.simple_reactive"
+
     __metaclass__ = JBoxPluginType
 
 
