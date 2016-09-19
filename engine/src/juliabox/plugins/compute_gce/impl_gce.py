@@ -50,7 +50,7 @@ class CompGCE(JBPluginCloud):
 
     MIN_UPTIME = 50
     ACCEPTANCE_LOAD = 50
-    NUM_ACCEPTORS = 1
+    NUM_ACCEPTERS = 1
 
     @staticmethod
     def configure():
@@ -61,7 +61,7 @@ class CompGCE(JBPluginCloud):
         CompGCE.MIN_UPTIME = JBoxCfg.get('cloud_host.min_uptime', 50)
         CompGCE.SCALE_UP_INTERVAL = JBoxCfg.get('cloud_host.scale_up_interval', 300)
         CompGCE.ACCEPTANCE_LOAD = JBoxCfg.get('cloud_host.acceptance_load', 50)
-        CompGCE.NUM_ACCEPTORS = JBoxCfg.get('cloud_host.num_acceptors', 1)
+        CompGCE.NUM_ACCEPTERS = JBoxCfg.get('cloud_host.num_accepters', 1)
 
     @staticmethod
     def get_install_id():
@@ -417,9 +417,9 @@ class CompGCE(JBPluginCloud):
             filtered_nodes = cluster_load.keys()
 
         filtered_nodes.sort()
-        acceptor = random.choice(filtered_nodes[0 : CompGCE.NUM_ACCEPTORS])
-        CompGCE.log_info("Redirect to instance_id: %r", acceptor)
-        return acceptor
+        accepter = random.choice(filtered_nodes[0 : CompGCE.NUM_ACCEPTERS])
+        CompGCE.log_info("Redirect to instance_id: %r", accepter)
+        return accepter
 
     @staticmethod
     def should_accept_session(is_leader):
@@ -483,7 +483,7 @@ class CompGCE(JBPluginCloud):
 
         # at low load values, sorting by load will be inaccurate, sort alphabetically instead
         filtered_nodes.sort()
-        if CompGCE.get_instance_id() in filtered_nodes[0 : CompGCE.NUM_ACCEPTORS]:
+        if CompGCE.get_instance_id() in filtered_nodes[0 : CompGCE.NUM_ACCEPTERS]:
             CompGCE.log_debug("Accepting: top among sorted instances (%r)", filtered_nodes)
             return True
 
