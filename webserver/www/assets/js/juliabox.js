@@ -447,7 +447,7 @@ var JuliaBox = (function($, _, undefined){
                     $.removeCookie(it);
                 }
             }
-        }
+        },
     	
     	logout_at_browser: function () {
                         self.clear_cookies();
