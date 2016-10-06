@@ -5,6 +5,7 @@ import urllib
 import io
 from juliabox.cloud import JBPluginCloud
 from juliabox.jbox_util import JBoxCfg, retry_on_errors
+from juliabox.db import JBoxSessionProps
 from oauth2client.client import GoogleCredentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload, MediaIoBaseUpload
@@ -100,6 +101,7 @@ class JBoxGS(JBPluginCloud):
 
     @staticmethod
     def pull(bucket, local_file, metadata_only=False):
+        sessname = local_file.split('.')[0]
         objname = os.path.basename(local_file)
         k = None
         try:
@@ -117,10 +119,11 @@ class JBoxGS(JBPluginCloud):
             fh = open(local_file, "wb")
             downloader = MediaIoBaseDownload(fh, req, chunksize=JBoxGS.CHUNK_SIZE*1024*1024)
             done = False
+            progress = 0.0
             num_retries = 0
             while not done:
                 try:
-                    _, done = downloader.next_chunk()
+                    progress, done = downloader.next_chunk()
                 except HttpError, err:
                     num_retries += 1
                     if num_retries > JBoxGS.MAX_RETRIES:
@@ -137,6 +140,8 @@ class JBoxGS(JBPluginCloud):
                     fh.close()
                     os.remove(local_file)
                     raise
+                JBoxSessionProps.set_login_percent(Compute.get_install_id(),
+                                                   progress, sessname=sessname)
             fh.close()
 
         if k is None:

@@ -6,7 +6,7 @@ from boto.dynamodb2.fields import HashKey
 from boto.dynamodb2.types import STRING
 
 from juliabox.db import JBoxDB, JBoxDBItemNotFound
-
+from juliabox.jbox_util import unique_sessname
 
 class JBoxSessionProps(JBoxDB):
     NAME = 'jbox_session'
@@ -21,21 +21,19 @@ class JBoxSessionProps(JBoxDB):
     TABLE = None
 
     KEYS = ['session_id']
-    ATTRIBUTES = ['user_id', 'snapshot_id', 'message', 'instance_id', 'attach_time', 'container_state', 'login_state']
+    ATTRIBUTES = ['user_id', 'snapshot_id', 'message', 'instance_id', 'attach_time', 'container_state', 'login_state', 'loading_percent']
     SQL_INDEXES = None
     KEYS_TYPES = [JBoxDB.VCHAR]
-    TYPES = [JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.INT, JBoxDB.VCHAR, JBoxDB.INT]
+    TYPES = [JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.INT, JBoxDB.VCHAR, JBoxDB.INT, JBoxDB.FLOAT]
 
     # maintenance runs are once in 5 minutes
     # TODO: make configurable
     SESS_UPDATE_INTERVAL = (5 * 1.5) * 60
 
     # Login states
-    NA = -1
-    DOWNLOADING = 0
-    EXTRACTING = 1
-    INITIALIZING = 2
-    STARTING_CONTAINER = 3
+    NA = 0
+    DOWNLOADING = 1
+    EXTRACTING = 2
 
     def __init__(self, cluster, session_id, create=False, user_id=None):
         if session_id.startswith("/"):
@@ -147,10 +145,17 @@ class JBoxSessionProps(JBoxDB):
         sessp.save()
 
     @staticmethod
-    def unset_login_state(cluster, sessname=None, email=None):
-        JBoxSessionProps.set_login_state(cluster, JBoxSessionProps.NA, sessname, email)
+    def set_login_percent(cluster, percent, sessname=None, email=None):
+        sessp = JBoxSessionProps._get_sessp(cluster, sessname, email)
+        sessp.set_attrib('login_percent', percent)
+        sessp.save()
 
     @staticmethod
-    def get_login_state(cluster, sessname=None, email=None):
+    def unset_login_data(cluster, sessname=None, email=None):
+        JBoxSessionProps.set_login_state(cluster, JBoxSessionProps.NA, 0.0,
+                                         sessname, email)
+
+    @staticmethod
+    def get_login_data(cluster, sessname=None, email=None):
         sessp = JBoxSessionProps._get_sessp(cluster, sessname, email)
-        return sessp.get_attrib('login_state')
+        return sessp.get_attrib('login_state'), sessp.get_attrib('login_percent')

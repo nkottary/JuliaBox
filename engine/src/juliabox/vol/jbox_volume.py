@@ -372,7 +372,17 @@ class JBoxVol(LoggerMixin):
         src_tar = tarfile.open(src, 'r:gz')
         try:
             perms = {}
-            for info in src_tar.getmembers():
+            files = src_tar.getmembers()
+            step = 0
+            last_percent = 0
+            for info in files:
+                percent = float(step)/len(files)
+                step += 1
+                if percent >= last_percent + 10:
+                    JBoxSessionProps.set_login_percent(Compute.get_install_id(),
+                                                       percent,
+                                                       sessname=sessname)
+                    last_percent = percent
                 if not info.name.startswith('juser/'):
                     continue
                 extract_name = info.name[6:]

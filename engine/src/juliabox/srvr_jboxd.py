@@ -164,7 +164,7 @@ class JBoxd(LoggerMixin):
     @jboxd_method
     def launch_session(name, email, reuse=True):
         JBoxd.publish_anticipated_load(name)
-        JBoxSessionProps.unset_login_state(Compute.get_install_id(), sessname=name)
+        JBoxSessionProps.unset_login_data(Compute.get_install_id(), sessname=name)
         JBoxd._wait_for_session_backup(name)
         VolMgr.refresh_disk_use_status()
         JBoxd._launch_session(name, email, reuse)

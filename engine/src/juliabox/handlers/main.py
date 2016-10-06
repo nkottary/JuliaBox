@@ -53,8 +53,8 @@ class MainHandler(JBoxHandler):
 
             loading_step += 1
             self.set_loading_state(loading_step)
-            state = JBoxSessionProps.get_login_state(Compute.get_install_id(), sessname=sessname)
-            self.write({'code': 0, 'state': state})
+            state, percent = JBoxSessionProps.get_login_data(Compute.get_install_id(), sessname=sessname)
+            self.write({'code': 0, 'state': state, 'percent': percent})
         else:
             self.write({'code': 1})
 

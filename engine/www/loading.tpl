@@ -7,8 +7,6 @@
         "Please wait...",
         "Downloading your backed up files...",
         "Extracting your files to disk...",
-        "Intializing container...",
-        "Starting container..."
     ];
 
     function monitor_loading() {
@@ -21,10 +19,10 @@
                     top.location.href = '/';
                 } else {
                     state = res.state;
-                    loading_percent = ((state + 1) * 20) + '%';
-                    $('#loading_state').html(login_comments[state + 1]);
-                    $('#loading-bar').html(loading_percent);
-                    $('#loading-bar').css('width', loading_percent);
+                    percent = res.percent;
+                    $('#loading_state').html(login_comments[state]);
+                    $('#loading-bar').html(percent);
+                    $('#loading-bar').css('width', percent);
                 }
             },
             error: function(res) {

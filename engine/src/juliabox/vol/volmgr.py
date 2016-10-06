@@ -152,10 +152,6 @@ class VolMgr(LoggerMixin):
 
         disk = plugin.get_disk_for_user(email)
 
-        JBoxSessionProps.set_login_state(Compute.get_install_id,
-                                         JBoxSessionProps.INITIALIZING,
-                                         email=email)
-
         try:
             disk.setup_tutorial_link()
             disk.gen_ssh_key()
