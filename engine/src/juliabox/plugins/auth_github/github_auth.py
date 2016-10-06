@@ -161,7 +161,7 @@ class GitHubAuthHandler(JBPluginHandler, OAuth2Mixin):
     def _on_access_token(self, future, response):
         """Callback function for the exchange to the access token."""
         if response.error:
-            future.set_exception(AuthError('GitHub auth error: %s' % str(response)))
+            future.set_exception(AuthError('GitHub auth error: %s [%s]' % (str(response), response.body)))
             return
         args = dict()
         tornado.httputil.parse_body_arguments(response.headers.get("Content-Type"), response.body, args, None)

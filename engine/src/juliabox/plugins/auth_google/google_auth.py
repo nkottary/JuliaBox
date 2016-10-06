@@ -202,8 +202,7 @@ class GoogleAuthHandler(JBPluginHandler, OAuth2Mixin):
 
     def _on_user_info(self, future, response):
         if response.error:
-            future.set_exception(AuthError('Google auth error: %s [%s]' %
-                                           (str(response), response.body)), response)
+            future.set_exception(AuthError('Google auth error: %s [%s]' % (str(response), response.body)))
             return
         user_info = json.loads(response.body)
         future.set_result(user_info)
@@ -211,8 +210,7 @@ class GoogleAuthHandler(JBPluginHandler, OAuth2Mixin):
     def _on_access_token(self, future, response):
         """Callback function for the exchange to the access token."""
         if response.error:
-            future.set_exception(AuthError('Google auth error: %s [%s]' %
-                                           (str(response), response.body)), response)
+            future.set_exception(AuthError('Google auth error: %s [%s]' % (str(response), response.body)))
             return
         args = json.loads(response.body)
         if not args.has_key('access_token'):

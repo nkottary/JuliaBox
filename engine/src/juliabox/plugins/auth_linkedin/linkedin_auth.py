@@ -139,7 +139,7 @@ class LinkedInAuthHandler(JBPluginHandler, OAuth2Mixin):
     def _on_access_token(self, future, response):
         """Callback function for the exchange to the access token."""
         if response.error:
-            future.set_exception(AuthError('LinkedIn auth error: %s' % str(response)))
+            future.set_exception(AuthError('LinkedIn auth error: %s [%s]' % (str(response), response.body)))
             return
         args = json.loads(response.body)
         future.set_result(args)
