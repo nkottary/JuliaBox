@@ -365,7 +365,9 @@ class JBoxVol(LoggerMixin):
             return
 
         JBoxVol.log_info("Filtering out restore info from backup " + src + " to " + self.disk_path)
-        JBoxSessionProps.set_login_state(JBoxSessionProps.EXTRACTING)
+        JBoxSessionProps.set_login_state(Compute.get_install_id(),
+                                         JBoxSessionProps.EXTRACTING,
+                                         sessname=sessname)
 
         src_tar = tarfile.open(src, 'r:gz')
         try:
