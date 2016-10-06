@@ -346,8 +346,9 @@ class JBoxVol(LoggerMixin):
         old_sessname = esc_sessname(self.user_email)
         src = os.path.join(JBoxVol.BACKUP_LOC, sessname + ".tar.gz")
 
-        sessp = JBoxSessionProps(Compute.get_install_id, sessname)
-        sessp.set_login_state(JBoxSessionProps.DOWNLOADING)
+        JBoxSessionProps.set_login_state(Compute.get_install_id(),
+                                         JBoxSessionProps.DOWNLOADING,
+                                         sessname=sessname)
 
         pull_from_bucketstore = JBoxVol.pull_from_bucketstore
         mig_hndl = JBPluginCloud.jbox_get_plugin(JBPluginCloud.JBP_MIGRATE)
@@ -364,7 +365,7 @@ class JBoxVol(LoggerMixin):
             return
 
         JBoxVol.log_info("Filtering out restore info from backup " + src + " to " + self.disk_path)
-        sessp.set_login_state(JBoxSessionProps.EXTRACTING)
+        JBoxSessionProps.set_login_state(JBoxSessionProps.EXTRACTING)
 
         src_tar = tarfile.open(src, 'r:gz')
         try:

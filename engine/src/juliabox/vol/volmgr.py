@@ -152,9 +152,9 @@ class VolMgr(LoggerMixin):
 
         disk = plugin.get_disk_for_user(email)
 
-        sessname = unique_sessname(email)
-        sessp = JBoxSessionProps(Compute.get_install_id, sessname)
-        sessp.set_login_state(JBoxSessionProps.INITIALIZING)
+        JBoxSessionProps.set_login_state(Compute.get_install_id,
+                                         JBoxSessionProps.INITIALIZING,
+                                         email=email)
 
         try:
             disk.setup_tutorial_link()

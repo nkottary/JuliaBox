@@ -423,11 +423,6 @@ class JBoxHandler(JBoxCookies):
                 self.log_info('Login restricted for user %r by plugin %r', user_id, plugin)
                 return
 
-        sessp = JBoxSessionProps(Compute.get_install_id(),
-                                 unique_sessname(user_id))
-        if sessp:
-            sessp.unset_login_state()
-
         jbuser = JBoxUserV2(user_id, create=True)
 
         if not JBPluginHandler.is_user_activated(jbuser):

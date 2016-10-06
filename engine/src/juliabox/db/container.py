@@ -134,13 +134,23 @@ class JBoxSessionProps(JBoxDB):
                 result[instance_id] = sessions
         return result
 
-    def set_login_state(self, state):
-        self.set_attrib('login_state', state)
-        self.save()
+    @staticmethod
+    def _get_sessp(cluster, sessname=None, email=None):
+        if not sessname:
+            sessname = unique_sessname(email)
+        return JBoxSessionProps(cluster, sessname)
 
-    def unset_login_state(self):
-        self.set_attrib('login_state', NA)
-        self.save()
+    @staticmethod
+    def set_login_state(cluster, state, sessname=None, email=None):
+        sessp = JBoxSessionProps._get_sessp(cluster, sessname, email)
+        sessp.set_attrib('login_state', state)
+        sessp.save()
 
-    def get_login_state(self):
-        return self.get_attrib('login_state')
+    @staticmethod
+    def unset_login_state(cluster, sessname=None, email=None):
+        JBoxSessionProps.set_login_state(cluster, JBoxSessionProps.NA, sessname, email)
+
+    @staticmethod
+    def get_login_state(cluster, sessname=None, email=None):
+        sessp = JBoxSessionProps._get_sessp(cluster, sessname, email)
+        return sessp.get_attrib('login_state')

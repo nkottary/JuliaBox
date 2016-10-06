@@ -82,9 +82,9 @@ class SessContainer(BaseContainer):
             }
         }
 
-        sessname = unique_sessname(email)
-        sessp = JBoxSessionProps(Compute.get_install_id, sessname)
-        sessp.set_login_state(JBoxSessionProps.STARTING_CONTAINER)
+        JBoxSessionProps.set_login_state(Compute.get_install_id(),
+                                         JBoxSessionProps.STARTING_CONTAINER,
+                                         sessname=name)
         port_bindings = {p: ('127.0.0.1',) for p in SessContainer.PORTS}
         hostcfg = docker.utils.create_host_config(binds=vols,
                                                   port_bindings=port_bindings,
