@@ -3,6 +3,13 @@
 {% block head %}
 <script type="text/javascript">
     var monitor_loading_timer;
+    var login_comments = {
+        (-1): "Please wait...",
+        1: "Downloading your backed up files...",
+        2: "Extracting your files to disk...",
+        3: "Intializing container...",
+        4: "Starting container..."
+    }
 
     function monitor_loading() {
         $.ajax({
@@ -12,6 +19,12 @@
                 if(res.code != 0) {
                     clearInterval(monitor_loading_timer);
                     top.location.href = '/';
+                } else {
+                    state = res.state;
+                    loading_percent = ((state + 1) * 20) + '%';
+                    $('#loading_state').html(login_comments[state]);
+                    $('#loading-bar').html(loading_percent);
+                    $('#loading-bar').css('width', loading_percent);
                 }
             },
             error: function(res) {
@@ -47,7 +60,10 @@
         <tr width="100%" height="100%" align="center" valign="middle">
             <td width="100%" height="100%" align="center" valign="middle">
                 <img src="/assets/img/loading.gif" width="64" height="64"/><br/><br/>
-                <div id="loading_state">Creating a JuliaBox instance just for you!</div>
+                <div id="loading_state">Please wait...</div>
+                <div class="progress" style="width:40%">
+                    <div id="loading-bar" class="progress-bar progress-bar-striped active" role="progressbar" style="width:0%">0%</div>
+                </div>
             </td>
         </tr>
     </table>

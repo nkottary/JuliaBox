@@ -21,14 +21,21 @@ class JBoxSessionProps(JBoxDB):
     TABLE = None
 
     KEYS = ['session_id']
-    ATTRIBUTES = ['user_id', 'snapshot_id', 'message', 'instance_id', 'attach_time', 'container_state']
+    ATTRIBUTES = ['user_id', 'snapshot_id', 'message', 'instance_id', 'attach_time', 'container_state', 'login_state']
     SQL_INDEXES = None
     KEYS_TYPES = [JBoxDB.VCHAR]
-    TYPES = [JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.INT, JBoxDB.VCHAR]
+    TYPES = [JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.VCHAR, JBoxDB.INT, JBoxDB.VCHAR, JBoxDB.INT]
 
     # maintenance runs are once in 5 minutes
     # TODO: make configurable
     SESS_UPDATE_INTERVAL = (5 * 1.5) * 60
+
+    # Login states
+    NA = -1
+    DOWNLOADING = 0
+    EXTRACTING = 1
+    INITIALIZING = 2
+    STARTING_CONTAINER = 3
 
     def __init__(self, cluster, session_id, create=False, user_id=None):
         if session_id.startswith("/"):
@@ -126,3 +133,14 @@ class JBoxSessionProps(JBoxDB):
                 sessions[record.get('session_id')] = record.get('container_state', 'Unknown')
                 result[instance_id] = sessions
         return result
+
+    def set_login_state(self, state):
+        self.set_attrib('login_state', state)
+        self.save()
+
+    def unset_login_state(self):
+        self.set_attrib('login_state', NA)
+        self.save()
+
+    def get_login_state(self):
+        return self.get_attrib('login_state')

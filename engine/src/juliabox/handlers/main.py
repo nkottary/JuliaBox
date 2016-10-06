@@ -41,6 +41,7 @@ class MainHandler(JBoxHandler):
 
     def do_monitor_loading_ajax(self, user_id):
         sessname = unique_sessname(user_id)
+        sessp = JBoxSessionProps(Compute.get_install_id(), sessname)
         self.log_debug("AJAX monitoring loading of session [%s] user[%s]...", sessname, user_id)
         cont = SessContainer.get_by_name(sessname)
         if (cont is None) or (not cont.is_running()):
@@ -52,7 +53,7 @@ class MainHandler(JBoxHandler):
 
             loading_step += 1
             self.set_loading_state(loading_step)
-            self.write({'code': 0})
+            self.write({'code': 0, 'state': sessp.get_login_state()})
         else:
             self.write({'code': 1})
 
