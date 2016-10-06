@@ -7,6 +7,7 @@ from handler_base import JBoxHandler, JBPluginHandler
 from juliabox.jbox_util import unique_sessname, JBoxCfg
 from juliabox.interactive import SessContainer
 from juliabox.cloud import Compute
+from juliabox.db import JBoxSessionProps
 
 
 class MainHandler(JBoxHandler):

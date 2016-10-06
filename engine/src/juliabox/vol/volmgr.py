@@ -4,7 +4,7 @@ import errno
 import pytz
 
 from juliabox.jbox_util import LoggerMixin, unique_sessname
-from juliabox.db import JBoxUserV2, JBoxDynConfig
+from juliabox.db import JBoxUserV2, JBoxDynConfig, JBoxSessionProps
 from jbox_volume import JBoxVol
 from juliabox.cloud import JBPluginCloud, Compute
 

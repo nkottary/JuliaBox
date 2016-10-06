@@ -14,6 +14,7 @@ from juliabox.jbox_util import LoggerMixin, JBoxCfg, make_sure_path_exists
 from juliabox.jbox_util import JBoxPluginType
 from juliabox.jbox_util import create_host_mnt_command, create_container_mnt_command
 from juliabox.jbox_crypto import ssh_keygen
+from juliabox.db import JBSessionProps
 
 
 class JBoxVol(LoggerMixin):

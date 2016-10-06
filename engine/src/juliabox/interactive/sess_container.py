@@ -6,6 +6,7 @@ from juliabox.jbox_tasks import JBoxAsyncJob
 from juliabox.jbox_util import JBoxCfg
 from juliabox.jbox_container import BaseContainer
 from juliabox.vol import VolMgr, JBoxVol
+from juliabox.db import JBoxSessionProps
 import docker.utils
 from docker.utils import Ulimit
 import time

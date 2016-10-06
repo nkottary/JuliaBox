@@ -3,13 +3,13 @@
 {% block head %}
 <script type="text/javascript">
     var monitor_loading_timer;
-    var login_comments = {
-        (-1): "Please wait...",
-        1: "Downloading your backed up files...",
-        2: "Extracting your files to disk...",
-        3: "Intializing container...",
-        4: "Starting container..."
-    }
+    var login_comments = [
+        "Please wait...",
+        "Downloading your backed up files...",
+        "Extracting your files to disk...",
+        "Intializing container...",
+        "Starting container..."
+    ];
 
     function monitor_loading() {
         $.ajax({
@@ -22,7 +22,7 @@
                 } else {
                     state = res.state;
                     loading_percent = ((state + 1) * 20) + '%';
-                    $('#loading_state').html(login_comments[state]);
+                    $('#loading_state').html(login_comments[state + 1]);
                     $('#loading-bar').html(loading_percent);
                     $('#loading-bar').css('width', loading_percent);
                 }
