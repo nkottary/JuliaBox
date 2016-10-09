@@ -277,6 +277,12 @@ class JBoxVol(LoggerMixin):
         if not (os.path.exists(tut_link) or os.path.lexists(tut_link)):
             os.symlink(tut_path, tut_link)
 
+    def setup_whatsnew_link(self):
+        wn_link = os.path.join(self.disk_path, "WhatsNew")
+        wn_path = os.path.join("/opt", "juliabox", ".juliabox", "WhatsNew")
+        if not (os.path.exists(wn_link) or os.path.lexists(wn_link)):
+            os.symlink(wn_path, wn_link)
+
     def setup_instance_config(self, profiles=('default',)):
         for profile in profiles:
             profile_path = '.ipython/profile_' + profile

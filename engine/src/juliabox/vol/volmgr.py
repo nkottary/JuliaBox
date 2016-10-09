@@ -154,6 +154,7 @@ class VolMgr(LoggerMixin):
 
         try:
             disk.setup_tutorial_link()
+            disk.setup_whatsnew_link()
             disk.gen_ssh_key()
             disk.gen_gitconfig()
         except IOError as ioe:

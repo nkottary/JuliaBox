@@ -46,6 +46,7 @@ ${SUDO_JUSER} cp ${DIR}/IJulia/custom.js ${CFG_DIR}/.ipython/profile_default/sta
 ${SUDO_JUSER} cp -R ${DIR}/IJulia/tornado ${CFG_DIR}/.juliabox/tornado
 ${SUDO_JUSER} cp ${DIR}/IJulia/supervisord.conf ${CFG_DIR}/.juliabox/supervisord.conf
 ${SUDO_JUSER} cp -R ${DIR}/IJulia/tutorial ${CFG_DIR}/.juliabox/tutorial
+${SUDO_JUSER} cp -R ${DIR}/IJulia/WhatsNew ${CFG_DIR}/.juliabox/WhatsNew
 
 sudo rm ${DATA_LOC}/julia_packages.tar.gz
 sudo tar -czf ${DATA_LOC}/julia_packages.tar.gz -C ${PKG_DIR} .
